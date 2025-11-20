@@ -50,6 +50,16 @@ public class Usuarios{
         boolean retorno = false;
         if(actual == null){
             retorno = false;
+        }else if (actual.getNick() == nick){
+            retorno = true;
+        }else{
+            
+            int comparacion = nick.compareTo(actual.getNick());
+            if(comparacion < 0){
+                retorno = verificarUserRec(actual.getAnt(),nick);
+            }else{
+                retorno = verificarUserRec(actual.getSig(),nick);
+            }
         }
         return retorno;
     }

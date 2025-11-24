@@ -1,6 +1,7 @@
 import java.io.Serializable;
 
 public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String nick;
     private int pass;
@@ -69,5 +70,112 @@ public class Usuario implements Serializable {
         this.sig = sig;
     }
     
+    public boolean validarPass(int passIngresada){
+        boolean validacion;
+        if (passIngresada == this.pass){
+            validacion = true;
+        }else{
+            validacion = false;
+        }
+        return validacion;
+    }
+    
+    //Lista DE VISTOS POR EL USUARIO
+    //insertar nuevo en vistos
+    public void insertarVisto(Visto nuevo){
+        nuevo.setSigVisto(visto);
+        this.visto = nuevo;
+    }
+    
+    public boolean fueVisto(Texto texto){
+        Visto actual = visto;
+        boolean valido = false;
+    
+        while(actual != null && !valido){
+            if(actual.getTextoVisto().equals(texto)){
+                valido = true;
+            } else {
+                actual = actual.getSigVisto();
+            }
+        }
+    
+        return valido;
+    }
+    
+    @Override
+    public String toString() {
+        return "Usuario{nick='" + nick + "', pass=" + pass + "}";
+    }
+    
+    //LISTA DE TEXTOS CREADOS POR EL USUARIO
+    public void insertarTexto(Texto nuevo){
+        textos = insertarTextoRec(textos,nuevo);
+    }
+    
+    private Texto insertarTextoRec(Texto actual,Texto nuevo){
+        Texto resultado = actual;
+        
+        if (actual == null || actual.getFecha().isBefore(nuevo.getFecha())){
+            nuevo.setSiguiente(actual);
+            resultado = nuevo;
+        }else{
+            actual.setSiguiente(insertarTextoRec(actual.getSiguiente(),nuevo));
+        }
+        return resultado;
+    }
+    
+    public boolean verificarExist(String cadena){
+        boolean valido = false;
+        Texto actual = textos;
+        while(actual != null && !valido){
+            if(actual.getTexto().equals(cadena)){
+                valido = true;
+            }else{
+                actual= actual.getSiguiente();
+            }
+        }
+        return valido;
+    }
+    
+    public boolean fueEscrito(Texto texto){
+        boolean valido = false;
+        Texto actual = textos;
+        while(actual != null && !valido){
+            //Utilizo equals porque comparo objetos
+            if(actual.equals(texto)){
+                valido = true;
+            }else{
+                actual = actual.getSiguiente();
+            }
+            
+        }
+        return valido;
+    }
+    
+    public int cantidadTextos(){
+        Texto actual = textos;
+        int cantidad = 0;
+    
+        while (actual != null){
+            cantidad++;
+            actual = actual.getSiguiente();
+        }
+    
+        return cantidad;
+    }
+    
+    public Texto BuscarTextoUser(String textoBuscado){
+        Texto actual = textos;
+        Texto retorno = null;
+        while(actual != null && !actual.getTexto().equals(textoBuscado)){
+            actual.getSiguiente();
+        }
+        
+        if (actual != null){
+            retorno = actual;
+        }
+        return retorno;
+    }
+
     
 }

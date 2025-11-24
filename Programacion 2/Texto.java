@@ -1,19 +1,18 @@
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Texto implements Serializable {
+public class Texto {
     private LocalDateTime fecha;
     private String texto;
     private int vistas;
     private Texto siguiente;
-    private Texto anterior;
+    private Texto menosVisto;
     
     public Texto(LocalDateTime fecha, String texto, int vistas) {
         this.fecha = fecha;
         this.texto = texto;
         this.vistas = vistas;
         this.siguiente = null;
-        this.anterior = null;
+        this.menosVisto = null;
     }
 
     // GETTERS
@@ -29,12 +28,11 @@ public class Texto implements Serializable {
         return vistas;
     }
 
-    public Texto getSiguiente() {
-        return siguiente;
+    public Texto getMenosVisto() {
+        return menosVisto;
     }
-
-    public Texto getAnterior() {
-        return anterior;
+    public Texto getSiguiente(){
+        return siguiente;
     }
 
     // SETTERS
@@ -50,12 +48,12 @@ public class Texto implements Serializable {
         this.vistas = vistas;
     }
 
-    public void setSiguiente(Texto siguiente) {
-        this.siguiente = siguiente;
+    public void setMenosVisto(Texto menosVisto) {
+        this.menosVisto = menosVisto;
     }
-
-    public void setAnterior(Texto anterior) {
-        this.anterior = anterior;
+    
+    public void setSiguiente(Texto siguiente){
+        this.siguiente = siguiente;
     }
 
 }

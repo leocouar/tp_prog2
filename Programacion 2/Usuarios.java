@@ -5,14 +5,29 @@ public class Usuarios{
         this.raiz = null;
     }
     
+    public Usuario getRaiz(){
+        return raiz;
+    }
+    
     public void cargarUsuarios(){}
     
     //Funcion principal para crear usuarios
     public void crearUsuario(){
         
     }
+    public void mostrarOrdenado(){
+        mostrarOrdenadoRec(raiz);
+    }
     
-    //Primer llamado para la Insercion de Usuario
+    private void mostrarOrdenadoRec(Usuario actual){
+        if (actual != null){
+            mostrarOrdenadoRec(actual.getAnt());
+            System.out.println(actual.getNick());
+            mostrarOrdenadoRec(actual.getSig());
+        }
+    }
+    
+   //Primer llamado para la Insercion de Usuario
     public void insertarUsuario(Usuario nuevo){
         raiz = insertarUsuarioRec(raiz,nuevo);
     }
@@ -27,14 +42,14 @@ public class Usuarios{
             int comparacion = nuevo.getNick().compareTo(actual.getNick());
             
             if(comparacion < 0){
-                // nuevo.nick es "menor" → va al anterior
+                // nuevo.getNick es "menor" → va al anterior
                 actual.setAnt(insertarUsuarioRec(actual.getAnt(),nuevo));
             }else if (comparacion > 0){
                 // nuevo.nick es "mayor" → va al siguiente
                 actual.setSig(insertarUsuarioRec(actual.getSig(),nuevo));
             }else {
-                // comparacion == 0 → nombres iguales → NO insertar repetido
-                System.out.println("Nombre repetido: " + nuevo.getNick());
+                // comparacion == 0 → nicks iguales → NO insertar repetido
+                System.out.println("nick repetido: " + nuevo.getNick());
             }
         }
         
@@ -43,25 +58,62 @@ public class Usuarios{
     
     //verifica si Existe el Usuario
     public boolean verificarUsuario(String nick){
-        return verificarUserRec(raiz,nick);
+        boolean resultado;
+        Usuario usuario = buscarUsuarioRec(raiz, nick);
+        if (usuario != null){
+            resultado = true;
+        }else{
+            resultado = false;
+        }
+        return resultado;
     }
     
-    private boolean verificarUserRec(Usuario actual , String nick){
-        boolean retorno = false;
-        if(actual == null){
-            retorno = false;
-        }else if (actual.getNick() == nick){
-            retorno = true;
-        }else{
-            
-            int comparacion = nick.compareTo(actual.getNick());
-            if(comparacion < 0){
-                retorno = verificarUserRec(actual.getAnt(),nick);
-            }else{
-                retorno = verificarUserRec(actual.getSig(),nick);
-            }
-        }
-        return retorno;
+    public Usuario buscarUsuario(String nick){
+        return buscarUsuarioRec(raiz, nick);
     }
+    
+    private Usuario buscarUsuarioRec(Usuario actual, String nick){
+        if (actual == null) {
+            return null; // no existe
+        }
+        
+        //comparo con equals porque me daba error
+        if (actual.getNick().equals(nick)) {
+            return actual;
+        }
+    
+        int comparacion = nick.compareTo(actual.getNick());
+        if (comparacion < 0) {
+            return buscarUsuarioRec(actual.getAnt(), nick);
+        } else {
+            return buscarUsuarioRec(actual.getSig(), nick);
+        }
+        //No hay condicion que no este contemplada, 
+        //Si usaba una variable y un retono sigue ejecutandose incluso despues de encontrar el usuario
+        //Por lo menos no puse un Break xD
+    }
+    
+    public Usuario UsuarioMasTextos(){
+        return buscarMasTextosRec(raiz);
+    }
+    
+    private Usuario buscarMasTextosRec(Usuario actual){
+        if (actual == null) {
+            return null; // no existe
+        }
+        
+        Usuario anterior = buscarMasTextosRec(actual.getAnt());
+        Usuario siguiente = buscarMasTextosRec(actual.getSig());
+        Usuario mayor = actual;
+        
+        if(anterior != null && anterior.cantidadTextos() > mayor.cantidadTextos()){
+            mayor = anterior;
+        }else if(siguiente != null && siguiente.cantidadTextos() > mayor.cantidadTextos()){
+            mayor = siguiente;
+        }
+        return mayor;
+    }
+    
+    
 
 }
